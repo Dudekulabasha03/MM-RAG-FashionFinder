@@ -160,37 +160,37 @@ def create_gradio_interface(app):
         # Introduction
         gr.Markdown(
             """
-            # Fashion Style Analyzer
+            # Men's Fashion Style Analyzer
             
-            Upload an image to analyze fashion elements and get detailed information about the items.
+            Upload an image to analyze men's fashion elements and get detailed information about the items.
             This application combines computer vision, vector similarity, and large language models 
-            to provide detailed fashion analysis.
+            to provide detailed analysis of men's fashion styles, including suits, shirts, accessories, and more.
             """
         )
         
-        # Example images section - moved higher up
-        gr.Markdown("### Example Images")
+        # Example images section - updated for men's fashion
+        gr.Markdown("### Men's Fashion Examples")
         with gr.Row():
             # Display the images directly - show all 6 available images
-            gr.Image(value="examples/test-1.png", label="Example 1", show_label=True, scale=1)
-            gr.Image(value="examples/test-2.png", label="Example 2", show_label=True, scale=1)
-            gr.Image(value="examples/test-3.png", label="Example 3", show_label=True, scale=1)
+            gr.Image(value="examples/test-1.png", label="Men's Blazer", show_label=True, scale=1)
+            gr.Image(value="examples/test-2.png", label="Men's Shirt", show_label=True, scale=1)
+            gr.Image(value="examples/test-3.png", label="Men's Accessories", show_label=True, scale=1)
         
         with gr.Row():
-            gr.Image(value="examples/test-4.png", label="Example 4", show_label=True, scale=1)
-            gr.Image(value="examples/test-5.png", label="Example 5", show_label=True, scale=1)
-            gr.Image(value="examples/test-6.png", label="Example 6", show_label=True, scale=1)
+            gr.Image(value="examples/test-4.png", label="Men's Outerwear", show_label=True, scale=1)
+            gr.Image(value="examples/test-5.png", label="Men's Formal Wear", show_label=True, scale=1)
+            gr.Image(value="examples/test-6.png", label="Men's Casual Style", show_label=True, scale=1)
         
-        # Example image buttons - updated to handle all 6 examples
+        # Example image buttons - updated with men's fashion descriptions
         with gr.Row():
-            example1_btn = gr.Button("Use Example 1")
-            example2_btn = gr.Button("Use Example 2")
-            example3_btn = gr.Button("Use Example 3")
+            example1_btn = gr.Button("Use Men's Blazer Example")
+            example2_btn = gr.Button("Use Men's Shirt Example")
+            example3_btn = gr.Button("Use Men's Accessories Example")
         
         with gr.Row():
-            example4_btn = gr.Button("Use Example 4")
-            example5_btn = gr.Button("Use Example 5")
-            example6_btn = gr.Button("Use Example 6")
+            example4_btn = gr.Button("Use Men's Outerwear Example")
+            example5_btn = gr.Button("Use Men's Formal Wear Example")
+            example6_btn = gr.Button("Use Men's Casual Style Example")
         
         with gr.Row():
             with gr.Column(scale=1):
@@ -241,7 +241,7 @@ def create_gradio_interface(app):
             inputs=[gr.State("examples/test-1.png")],
             outputs=output
         ).then(
-            fn=lambda: "Example 1 analysis complete!",
+            fn=lambda: "Men's Blazer analysis complete!",
             inputs=None,
             outputs=status
         )
@@ -255,7 +255,7 @@ def create_gradio_interface(app):
             inputs=[gr.State("examples/test-2.png")],
             outputs=output
         ).then(
-            fn=lambda: "Example 2 analysis complete!",
+            fn=lambda: "Men's Shirt analysis complete!",
             inputs=None,
             outputs=status
         )
@@ -269,7 +269,7 @@ def create_gradio_interface(app):
             inputs=[gr.State("examples/test-3.png")],
             outputs=output
         ).then(
-            fn=lambda: "Example 3 analysis complete!",
+            fn=lambda: "Men's Accessories analysis complete!",
             inputs=None,
             outputs=status
         )
@@ -284,7 +284,7 @@ def create_gradio_interface(app):
             inputs=[gr.State("examples/test-4.png")],
             outputs=output
         ).then(
-            fn=lambda: "Example 4 analysis complete!",
+            fn=lambda: "Men's Outerwear analysis complete!",
             inputs=None,
             outputs=status
         )
@@ -298,7 +298,7 @@ def create_gradio_interface(app):
             inputs=[gr.State("examples/test-5.png")],
             outputs=output
         ).then(
-            fn=lambda: "Example 5 analysis complete!",
+            fn=lambda: "Men's Formal Wear analysis complete!",
             inputs=None,
             outputs=status
         )
@@ -312,7 +312,7 @@ def create_gradio_interface(app):
             inputs=[gr.State("examples/test-6.png")],
             outputs=output
         ).then(
-            fn=lambda: "Example 6 analysis complete!",
+            fn=lambda: "Men's Casual Style analysis complete!",
             inputs=None,
             outputs=status
         )
