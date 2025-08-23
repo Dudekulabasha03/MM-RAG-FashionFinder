@@ -1,70 +1,116 @@
 """
-Service for interacting with the Llama 3.2 Vision Instruct model.
+Service for interacting with local Ollama LLM models.
 """
 
 import logging
-from ibm_watsonx_ai import Credentials
-from ibm_watsonx_ai import APIClient
-from ibm_watsonx_ai.foundation_models import ModelInference
-from ibm_watsonx_ai.foundation_models.schema import TextChatParameters
+import requests
+import json
+import base64
+from typing import Optional
+import pandas as pd
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-class LlamaVisionService:
+class OllamaService:
     """
-    Provides methods to interact with the Llama 3.2 Vision Instruct model.
+    Provides methods to interact with local Ollama LLM models.
     """
     
-    def __init__(self, model_id, project_id, region="us-south", 
-                 temperature=0.2, top_p=0.6, api_key=None, max_tokens=2000):
+    def __init__(self, model_name="llama3.2:3b", 
+                 base_url="http://localhost:11434",
+                 temperature=0.2, top_p=0.6, max_tokens=2000):
         """
-        Initialize the service with the specified model and parameters.
+        Initialize the service with the specified Ollama model and parameters.
         
         Args:
-            model_id (str): Unique identifier for the model
-            project_id (str): Project ID to associate the task
-            region (str): Region for the watsonx AI service
+            model_name (str): Name of the Ollama model to use
+            base_url (str): Base URL for the Ollama API
             temperature (float): Controls randomness in generation
             top_p (float): Nucleus sampling parameter
-            api_key (str, optional): API key for authentication
             max_tokens (int): Maximum tokens in the response
         """
-        # TODO: Set up authentication credentials
+        self.model_name = model_name
+        self.base_url = base_url
+        self.temperature = temperature
+        self.top_p = top_p
+        self.max_tokens = max_tokens
         
-        # TODO: Initialize API client
-        
-        # TODO: Define parameters for the model's behavior
-        
-        # TODO: Initialize the model inference object
+        # Test connection to Ollama
+        self._test_connection()
     
-    def generate_response(self, encoded_image, prompt):
+    def _test_connection(self):
+        """Test the connection to Ollama service."""
+        try:
+            response = requests.get(f"{self.base_url}/api/tags", timeout=5)
+            if response.status_code == 200:
+                logger.info(f"Successfully connected to Ollama at {self.base_url}")
+                # Check if our model is available
+                models = response.json().get("models", [])
+                model_names = [model.get("name", "") for model in models]
+                if self.model_name in model_names:
+                    logger.info(f"Model {self.model_name} is available")
+                else:
+                    logger.warning(f"Model {self.model_name} not found. Available models: {model_names}")
+            else:
+                logger.error(f"Failed to connect to Ollama: {response.status_code}")
+        except Exception as e:
+            logger.error(f"Error connecting to Ollama: {e}")
+    
+    def generate_response(self, prompt: str, image_base64: Optional[str] = None) -> str:
         """
-        Generate a response from the model based on an image and prompt.
+        Generate a response from the Ollama model based on a prompt and optionally an image.
         
         Args:
-            encoded_image (str): Base64-encoded image string
             prompt (str): Text prompt to guide the model's response
+            image_base64 (str, optional): Base64-encoded image string
             
         Returns:
             str: Model's response
         """
         try:
-            logger.info("Sending request to LLM with prompt length: %d", len(prompt))
+            logger.info(f"Sending request to Ollama model {self.model_name} with prompt length: {len(prompt)}")
             
-            # TODO: Create the messages object
+            # Prepare the request payload
+            payload = {
+                "model": self.model_name,
+                "prompt": prompt,
+                "stream": False,
+                "options": {
+                    "temperature": self.temperature,
+                    "top_p": self.top_p,
+                    "num_predict": self.max_tokens
+                }
+            }
             
-            # TODO: Send the request to the model
+            # Add image if provided
+            if image_base64:
+                payload["images"] = [image_base64]
             
-            # TODO: Extract and validate the response
+            # Send request to Ollama
+            response = requests.post(
+                f"{self.base_url}/api/generate",
+                json=payload,
+                timeout=60
+            )
             
-            # TODO: Check if response appears to be truncated
-            
-            # TODO: Return the content
-            
+            if response.status_code == 200:
+                result = response.json()
+                content = result.get("response", "")
+                
+                # Check if response appears to be truncated
+                if result.get("done", False) and len(content) < 100:
+                    logger.warning("Response appears to be truncated or too short")
+                
+                logger.info(f"Successfully generated response with {len(content)} characters")
+                return content
+            else:
+                logger.error(f"Error from Ollama API: {response.status_code} - {response.text}")
+                return f"Error generating response: HTTP {response.status_code}"
+                
         except Exception as e:
-            logger.error("Error generating response: %s", str(e))
+            logger.error(f"Error generating response: {str(e)}")
             return f"Error generating response: {e}"
     
     def generate_fashion_response(self, user_image_base64, matched_row, all_items, 
@@ -82,16 +128,79 @@ class LlamaVisionService:
         Returns:
             str: Detailed fashion response
         """
-        # TODO: Generate a list of items with prices and links
-        
-        # TODO: Join items with clear separators
-        
-        # TODO: Create prompt based on similarity threshold
-        
-        # TODO: Send the prompt to the model
-        
-        # TODO: Check if response is incomplete and create basic response if needed
-        
-        # TODO: Ensure the items list is included
-        
-        # TODO: Return the final response
+        try:
+            # Generate a list of items with prices and links
+            items_list = []
+            for _, item in all_items.iterrows():
+                item_info = f"* {item.get('Item Name', 'Unknown Item')}"
+                if 'Price' in item and pd.notna(item['Price']):
+                    item_info += f" - Price: {item['Price']}"
+                if 'Brand' in item and pd.notna(item['Brand']):
+                    item_info += f" - Brand: {item['Brand']}"
+                if 'Image URL' in item and pd.notna(item['Image URL']):
+                    item_info += f" - [View Image]({item['Image URL']})"
+                items_list.append(item_info)
+            
+            # Join items with clear separators
+            items_text = "\n".join(items_list)
+            
+            # Create prompt based on similarity threshold
+            if similarity_score >= threshold:
+                match_quality = "excellent match"
+                confidence = "high confidence"
+            else:
+                match_quality = "similar item"
+                confidence = "moderate confidence"
+            
+            # Create the fashion analysis prompt
+            prompt = f"""You are a fashion expert analyzing a user's uploaded image. 
+
+The user's image has been matched with {match_quality} in our database with {confidence} (similarity score: {similarity_score:.2f}).
+
+MATCHED ITEM DETAILS:
+- Item Name: {matched_row.get('Item Name', 'Unknown')}
+- Brand: {matched_row.get('Brand', 'Unknown')}
+- Price: {matched_row.get('Price', 'Unknown')}
+- Category: {matched_row.get('Category', 'Unknown')}
+
+RELATED ITEMS IN DATABASE:
+{items_text}
+
+Please provide a detailed fashion analysis including:
+1. Description of the main item in the user's image
+2. Style analysis (colors, patterns, fit, occasion)
+3. Fashion recommendations and styling tips
+4. Similar alternatives from our database
+
+Keep the response informative, engaging, and fashion-focused. Use markdown formatting for better readability."""
+
+            # Send the prompt to the model
+            response = self.generate_response(prompt, user_image_base64)
+            
+            # Check if response is incomplete and create basic response if needed
+            if not response or len(response.strip()) < 100:
+                logger.warning("Generated response is too short, creating fallback response")
+                response = f"""## Fashion Analysis Results
+
+Based on your image, I've identified a {match_quality} in our database:
+
+**Matched Item:** {matched_row.get('Item Name', 'Unknown')}
+**Brand:** {matched_row.get('Brand', 'Unknown')}
+**Price:** {matched_row.get('Price', 'Unknown')}
+**Similarity Score:** {similarity_score:.2f}
+
+## Related Items Found
+
+{items_text}
+
+*Note: The AI analysis was incomplete, but here are the items we found in our database that match your image.*"""
+
+            # Ensure the items list is included
+            if "RELATED ITEMS" not in response and "Related Items" not in response:
+                response += f"\n\n## Related Items Found\n\n{items_text}"
+            
+            return response
+            
+        except Exception as e:
+            logger.error(f"Error generating fashion response: {e}")
+            return f"Error generating fashion analysis: {e}"

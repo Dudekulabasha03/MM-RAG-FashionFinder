@@ -2,10 +2,9 @@
 Configuration settings for the Style Finder application.
 """
 
-# Model and API configuration
-LLAMA_MODEL_ID = "meta-llama/llama-3-2-90b-vision-instruct"
-PROJECT_ID = "skills-network"  # Default project ID for lab environment
-REGION = "us-south"
+# Ollama LLM configuration
+OLLAMA_MODEL_NAME = "llama3.2:3b"
+OLLAMA_BASE_URL = "http://localhost:11434"
 
 # Image processing settings
 IMAGE_SIZE = (224, 224)

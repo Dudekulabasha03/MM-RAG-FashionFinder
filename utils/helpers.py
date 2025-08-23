@@ -20,11 +20,25 @@ def get_all_items_for_image(image_url, dataset):
     Returns:
         DataFrame: All items related to the image
     """
-    # TODO: Find all items related to the image URL in the dataset
-    
-    # TODO: Log the number of items found
-    
-    # TODO: Return the related items
+    try:
+        # Find all items related to the image URL in the dataset
+        if hasattr(dataset, 'loc') and 'Image URL' in dataset.columns:
+            related_items = dataset[dataset['Image URL'] == image_url]
+        else:
+            # Fallback: return empty DataFrame with required columns
+            import pandas as pd
+            related_items = pd.DataFrame(columns=['Item Name', 'Brand', 'Price', 'Category', 'Image URL'])
+        
+        # Log the number of items found
+        logger.info(f"Found {len(related_items)} items related to image URL: {image_url}")
+        
+        # Return the related items
+        return related_items
+    except Exception as e:
+        logger.error(f"Error getting items for image: {e}")
+        # Return empty DataFrame on error
+        import pandas as pd
+        return pd.DataFrame(columns=['Item Name', 'Brand', 'Price', 'Category', 'Image URL'])
 
 def format_alternatives_response(user_response, alternatives, similarity_score, threshold=0.8):
     """
