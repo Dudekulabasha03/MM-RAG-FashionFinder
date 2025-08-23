@@ -172,14 +172,14 @@ def create_gradio_interface(app):
         gr.Markdown("### Men's Fashion Examples")
         with gr.Row():
             # Display the images directly - show all 6 available images
-            gr.Image(value="examples/test-1.png", label="Men's Blazer", show_label=True, scale=1)
-            gr.Image(value="examples/test-2.png", label="Men's Shirt", show_label=True, scale=1)
-            gr.Image(value="examples/test-3.png", label="Men's Accessories", show_label=True, scale=1)
+            gr.Image(value="examples/mens-blazer.jpg", label="Men's Blazer", show_label=True, scale=1)
+            gr.Image(value="examples/mens-shirt.jpg", label="Men's Shirt", show_label=True, scale=1)
+            gr.Image(value="examples/mens-accessories.jpg", label="Men's Accessories", show_label=True, scale=1)
         
         with gr.Row():
-            gr.Image(value="examples/test-4.png", label="Men's Outerwear", show_label=True, scale=1)
-            gr.Image(value="examples/test-5.png", label="Men's Formal Wear", show_label=True, scale=1)
-            gr.Image(value="examples/test-6.png", label="Men's Casual Style", show_label=True, scale=1)
+            gr.Image(value="examples/mens-outerwear.jpg", label="Men's Outerwear", show_label=True, scale=1)
+            gr.Image(value="examples/mens-formal.jpg", label="Men's Formal Wear", show_label=True, scale=1)
+            gr.Image(value="examples/mens-casual.jpg", label="Men's Casual Style", show_label=True, scale=1)
         
         # Example image buttons - updated with men's fashion descriptions
         with gr.Row():
@@ -233,12 +233,12 @@ def create_gradio_interface(app):
         
         # 2. Example image buttons - fixed to directly process images
         example1_btn.click(
-            fn=lambda: "examples/test-1.png", 
+            fn=lambda: "examples/mens-blazer.jpg", 
             inputs=None, 
             outputs=status
         ).then(
             fn=app.process_image,
-            inputs=[gr.State("examples/test-1.png")],
+            inputs=[gr.State("examples/mens-blazer.jpg")],
             outputs=output
         ).then(
             fn=lambda: "Men's Blazer analysis complete!",
@@ -247,12 +247,12 @@ def create_gradio_interface(app):
         )
         
         example2_btn.click(
-            fn=lambda: "examples/test-2.png", 
+            fn=lambda: "examples/mens-shirt.jpg", 
             inputs=None, 
             outputs=status
         ).then(
             fn=app.process_image,
-            inputs=[gr.State("examples/test-2.png")],
+            inputs=[gr.State("examples/mens-shirt.jpg")],
             outputs=output
         ).then(
             fn=lambda: "Men's Shirt analysis complete!",
@@ -261,12 +261,12 @@ def create_gradio_interface(app):
         )
         
         example3_btn.click(
-            fn=lambda: "examples/test-3.png", 
+            fn=lambda: "examples/mens-accessories.jpg", 
             inputs=None, 
             outputs=status
         ).then(
             fn=app.process_image,
-            inputs=[gr.State("examples/test-3.png")],
+            inputs=[gr.State("examples/mens-accessories.jpg")],
             outputs=output
         ).then(
             fn=lambda: "Men's Accessories analysis complete!",
@@ -276,12 +276,12 @@ def create_gradio_interface(app):
         
         # New example buttons for 4, 5, and 6 - fixed functionality
         example4_btn.click(
-            fn=lambda: "examples/test-4.png", 
+            fn=lambda: "examples/mens-outerwear.jpg", 
             inputs=None, 
             outputs=status
         ).then(
             fn=app.process_image,
-            inputs=[gr.State("examples/test-4.png")],
+            inputs=[gr.State("examples/mens-outerwear.jpg")],
             outputs=output
         ).then(
             fn=lambda: "Men's Outerwear analysis complete!",
@@ -290,12 +290,12 @@ def create_gradio_interface(app):
         )
         
         example5_btn.click(
-            fn=lambda: "examples/test-5.png", 
+            fn=lambda: "examples/mens-formal.jpg", 
             inputs=None, 
             outputs=status
         ).then(
             fn=app.process_image,
-            inputs=[gr.State("examples/test-5.png")],
+            inputs=[gr.State("examples/mens-formal.jpg")],
             outputs=output
         ).then(
             fn=lambda: "Men's Formal Wear analysis complete!",
@@ -304,12 +304,12 @@ def create_gradio_interface(app):
         )
         
         example6_btn.click(
-            fn=lambda: "examples/test-6.png", 
+            fn=lambda: "examples/mens-casual.jpg", 
             inputs=None, 
             outputs=status
         ).then(
             fn=app.process_image,
-            inputs=[gr.State("examples/test-6.png")],
+            inputs=[gr.State("examples/mens-casual.jpg")],
             outputs=output
         ).then(
             fn=lambda: "Men's Casual Style analysis complete!",
