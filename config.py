@@ -3,7 +3,7 @@ Configuration settings for the Style Finder application.
 """
 
 # Ollama LLM configuration
-OLLAMA_MODEL_NAME = "llama3.2:3b"
+OLLAMA_MODEL_NAME = "granite-vison3.2:2b"
 OLLAMA_BASE_URL = "http://localhost:11434"
 
 # Image processing settings
