@@ -4,9 +4,8 @@ A fashion style analyzer that combines computer vision, vector similarity, and l
 
 ## 🚀 Recent Updates
 
-**IBM Watson AI → Local Ollama Integration**
-- ✅ Replaced IBM Watson AI with local Ollama LLM service
-- ✅ Now uses `llama3.2:3b` model for fashion analysis
+**Local Ollama Integration**
+- ✅ Now uses `granite-vison3.2:3b` model for fashion analysis
 - ✅ No more API keys or external dependencies required
 - ✅ Faster response times and offline capability
 
@@ -141,7 +140,7 @@ ollama serve
 ollama list
 
 # Pull the required model
-ollama pull llama3.2:3b
+ollama pull granite-vison3.2:2b
 ```
 
 ### Port Already in Use
@@ -154,20 +153,11 @@ kill -9 <PID>
 ollama serve
 ```
 
-## 🔄 Migration from IBM Watson AI
-
-If you were previously using IBM Watson AI:
-
-1. **Removed Dependencies**: `ibm-watsonx-ai` package removed
-2. **Updated Service**: `LlamaVisionService` → `OllamaService`
-3. **Configuration Changes**: Updated `config.py` for Ollama settings
-4. **API Changes**: No more API keys or external authentication
-
 ## 📝 Notes
 
 - **Performance**: Local Ollama provides faster response times
 - **Offline Capability**: Works without internet connection once model is downloaded
-- **Resource Usage**: `llama3.2:3b` requires ~2GB RAM and ~2GB disk space
+- **Resource Usage**: `granite-vison3.2:2b` requires ~2GB RAM and ~5GB disk space
 - **Model Quality**: 3B parameter model provides good balance of speed and quality
 
 ## 🤝 Contributing
@@ -176,13 +166,5 @@ Feel free to submit issues and enhancement requests!
 
 ## 📄 License
 
-This project is open source and available under the MIT License.
-# MM-RAG-FashionFinder
-# MM-RAG-FashionFinder
-# MM-RAG-FashionFinder
-# MM-RAG-FashionFinder
-# MM-RAG-FashionFinder
-# MM-RAG-FashionFinder
-# MM-RAG-FashionFinder
-# MM-RAG-FashionFinder
+This project is open source and available 
 # MM-RAG-FashionFinder
